@@ -1,0 +1,19 @@
+[runner]
+openai_key = ""
+model = "gpt-3.5-turbo"
+use_cache = true
+cache_path = ""
+local_folder = "prompts-folder"
+
+[prompt]
+git_user = "danoan-prompts"
+local_folder = "prompts-folder"
+
+[prompt.versioning]
+alternative-expression = "v2.0.0"
+correct-text = "v3.0.0"
+reverse-definition = "v1.0.0"
+word-definition = "v1.0.0"
+translate = "v1.0.0"
+summarize = "v1.0.0"
+explain-correction = "v1.0.0"
