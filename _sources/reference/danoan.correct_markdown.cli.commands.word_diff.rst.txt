@@ -1,0 +1,7 @@
+danoan.correct\_markdown.cli.commands.word\_diff module
+=======================================================
+
+.. automodule:: danoan.correct_markdown.cli.commands.word_diff
+   :members:
+   :undoc-members:
+   :show-inheritance:

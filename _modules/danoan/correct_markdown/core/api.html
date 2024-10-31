@@ -1,0 +1,259 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>danoan.correct_markdown.core.api &mdash; correct-markdown 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=a3d76245" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            correct-markdown
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting-started.html">Getting started with Correct Markdown</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-reference.html">API Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design-and-architecture.html">Design and Architecture</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">correct-markdown</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">danoan.correct_markdown.core.api</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for danoan.correct_markdown.core.api</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">danoan.correct_markdown.core.markdown_view</span> <span class="kn">import</span> <span class="n">MarkdownView</span>
+<span class="kn">from</span> <span class="nn">danoan.correct_markdown.core</span> <span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span> <span class="nn">danoan.correct_markdown.core.model</span> <span class="kn">import</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">TextDiffMode</span>
+
+<span class="kn">from</span> <span class="nn">bs4</span> <span class="kn">import</span> <span class="n">BeautifulSoup</span>
+<span class="kn">import</span> <span class="nn">difflib</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">markdown</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Generator</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_plain_text_from_markdown">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.api.html#danoan.correct_markdown.core.api.get_plain_text_from_markdown">[docs]</a>
+<span class="k">def</span> <span class="nf">get_plain_text_from_markdown</span><span class="p">(</span><span class="n">markdown_stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes all markdown markup from a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">html</span> <span class="o">=</span> <span class="n">markdown</span><span class="o">.</span><span class="n">markdown</span><span class="p">(</span><span class="n">markdown_stream</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+    <span class="n">soup</span> <span class="o">=</span> <span class="n">BeautifulSoup</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s2">&quot;html.parser&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">soup</span><span class="o">.</span><span class="n">get_text</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="remove_html_tags">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.api.html#danoan.correct_markdown.core.api.remove_html_tags">[docs]</a>
+<span class="k">def</span> <span class="nf">remove_html_tags</span><span class="p">(</span><span class="n">string_stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes all html tags from a string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">string_stream</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">last</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">no_html</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">extract_html_tags</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="n">tag</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;no_html&quot;</span><span class="p">:</span>
+            <span class="n">no_html</span> <span class="o">+=</span> <span class="n">content</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">no_html</span> <span class="o">+=</span> <span class="n">content</span><span class="p">[</span><span class="n">last</span><span class="p">:</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">last</span> <span class="o">=</span> <span class="n">j</span>
+
+    <span class="n">no_html</span> <span class="o">+=</span> <span class="n">content</span><span class="p">[</span><span class="n">last</span><span class="p">:]</span>
+
+    <span class="k">return</span> <span class="n">no_html</span></div>
+
+
+
+<div class="viewcode-block" id="text_diff">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.api.html#danoan.correct_markdown.core.api.text_diff">[docs]</a>
+<span class="k">def</span> <span class="nf">text_diff</span><span class="p">(</span>
+    <span class="n">ss_a</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
+    <span class="n">ss_b</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span>
+    <span class="n">mode</span><span class="p">:</span> <span class="n">TextDiffMode</span><span class="p">,</span>
+    <span class="n">context_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">update_a</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Generator</span><span class="p">[</span><span class="n">DiffItem</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare two string streams and return the differences.</span>
+
+<span class="sd">    If mode is TextDiffMode.Letter, the streams are compared letter by letter.</span>
+<span class="sd">    If mode is TextDiffMode.Word, some characters such as whitespaces and new lines are ignored.</span>
+
+<span class="sd">    The context_size gives the number of letter or words surrounding the diff that is returned</span>
+<span class="sd">    as context.</span>
+
+<span class="sd">    If update_a, then the baseline stream is updated with the found diff before the search</span>
+<span class="sd">    for the next diff is started.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">seq1</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">seq2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">joiner</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TextDiffMode</span><span class="o">.</span><span class="n">Letter</span><span class="p">:</span>
+        <span class="n">seq1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ss_a</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">seq2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ss_b</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+        <span class="n">joiner</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">TextDiffMode</span><span class="o">.</span><span class="n">Word</span><span class="p">:</span>
+        <span class="n">seq1</span> <span class="o">=</span> <span class="n">ss_a</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">seq2</span> <span class="o">=</span> <span class="n">ss_b</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">joiner</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unexpected mode: </span><span class="si">{</span><span class="n">mode</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">sm</span> <span class="o">=</span> <span class="n">difflib</span><span class="o">.</span><span class="n">SequenceMatcher</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">seq1</span><span class="p">,</span> <span class="n">seq2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">i1</span><span class="p">,</span> <span class="n">i2</span><span class="p">,</span> <span class="n">j1</span><span class="p">,</span> <span class="n">j2</span> <span class="ow">in</span> <span class="n">sm</span><span class="o">.</span><span class="n">get_opcodes</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">update_a</span> <span class="ow">and</span> <span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;equal&quot;</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">context_before</span> <span class="o">=</span> <span class="n">joiner</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i1</span> <span class="o">-</span> <span class="n">context_size</span><span class="p">)</span> <span class="p">:</span> <span class="n">i1</span><span class="p">])</span>
+            <span class="n">context_after</span> <span class="o">=</span> <span class="n">joiner</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i2</span> <span class="p">:</span> <span class="n">i2</span> <span class="o">+</span> <span class="n">context_size</span><span class="p">])</span>
+            <span class="n">action_segment</span> <span class="o">=</span> <span class="n">joiner</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq1</span><span class="p">[</span><span class="n">i1</span><span class="p">:</span><span class="n">i2</span><span class="p">])</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">context_before</span><span class="si">}</span><span class="s2"> ___ </span><span class="si">{</span><span class="n">context_after</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="k">yield</span> <span class="n">DiffItem</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">action_segment</span><span class="p">,</span> <span class="n">joiner</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">seq2</span><span class="p">[</span><span class="n">j1</span><span class="p">:</span><span class="n">j2</span><span class="p">]),</span> <span class="n">tag</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">update_a</span><span class="p">:</span>
+                <span class="n">seq1</span> <span class="o">=</span> <span class="n">seq2</span><span class="p">[:</span><span class="n">j2</span><span class="p">]</span> <span class="o">+</span> <span class="n">seq1</span><span class="p">[</span><span class="n">i2</span><span class="p">:]</span>
+                <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">break</span></div>
+
+
+
+<div class="viewcode-block" id="strikethrough_errors">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.api.html#danoan.correct_markdown.core.api.strikethrough_errors">[docs]</a>
+<span class="k">def</span> <span class="nf">strikethrough_errors</span><span class="p">(</span><span class="n">markdown_stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">diff_items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DiffItem</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">footnote_index</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[^</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">new_value</span><span class="si">}{</span><span class="n">footnote_index</span><span class="si">}</span><span class="s2"> &quot;</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">footnote_index</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[^</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;~~</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">original_value</span><span class="si">}</span><span class="s2">~~ </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">new_value</span><span class="si">}{</span><span class="n">footnote_index</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">footnote_index</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;[^</span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2">]&quot;</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;~~</span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">original_value</span><span class="si">}</span><span class="s2">~~ </span><span class="si">{</span><span class="n">item</span><span class="o">.</span><span class="n">new_value</span><span class="si">}{</span><span class="n">footnote_index</span><span class="si">}</span><span class="s2">&quot;</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">render_diff_view</span><span class="p">(</span><span class="n">markdown_stream</span><span class="p">,</span> <span class="n">diff_items</span><span class="p">,</span> <span class="n">insert</span><span class="p">,</span> <span class="n">delete</span><span class="p">,</span> <span class="n">replace</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="apply_corrections">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.api.html#danoan.correct_markdown.core.api.apply_corrections">[docs]</a>
+<span class="k">def</span> <span class="nf">apply_corrections</span><span class="p">(</span><span class="n">markdown_stream</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">diff_items</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">DiffItem</span><span class="p">]):</span>
+    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">new_value</span>
+
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">new_value</span>
+
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="n">item</span><span class="p">:</span> <span class="n">DiffItem</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span><span class="o">.</span><span class="n">new_value</span>
+
+    <span class="k">return</span> <span class="n">utils</span><span class="o">.</span><span class="n">render_diff_view</span><span class="p">(</span><span class="n">markdown_stream</span><span class="p">,</span> <span class="n">diff_items</span><span class="p">,</span> <span class="n">insert</span><span class="p">,</span> <span class="n">delete</span><span class="p">,</span> <span class="n">replace</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Daniel Martins Antunes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

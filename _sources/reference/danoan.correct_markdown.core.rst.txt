@@ -1,0 +1,19 @@
+danoan.correct\_markdown.core package
+=====================================
+
+.. automodule:: danoan.correct_markdown.core
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   danoan.correct_markdown.core.api
+   danoan.correct_markdown.core.markdown_view
+   danoan.correct_markdown.core.model
+   danoan.correct_markdown.core.string_view
+   danoan.correct_markdown.core.utils

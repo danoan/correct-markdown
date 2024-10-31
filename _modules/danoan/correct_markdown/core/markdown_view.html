@@ -1,0 +1,318 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>danoan.correct_markdown.core.markdown_view &mdash; correct-markdown 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=a3d76245" />
+
+  
+      <script src="../../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../../_static/documentation_options.js?v=01f34227"></script>
+      <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs"></script>
+      <script type="module" src="https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs"></script>
+      <script type="module">import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";import elkLayouts from "https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk@0.1.4/dist/mermaid-layout-elk.esm.min.mjs";mermaid.registerLayoutLoaders(elkLayouts);mermaid.initialize({startOnLoad:false});</script>
+      <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+      <script type="module">
+import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11.2.0/dist/mermaid.esm.min.mjs";
+window.addEventListener("load", () => mermaid.run());
+</script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../../index.html" class="icon icon-home">
+            correct-markdown
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../getting-started.html">Getting started with Correct Markdown</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api-reference.html">API Reference</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../design-and-architecture.html">Design and Architecture</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">correct-markdown</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">danoan.correct_markdown.core.markdown_view</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for danoan.correct_markdown.core.markdown_view</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">danoan.correct_markdown.core</span> <span class="kn">import</span> <span class="n">api</span><span class="p">,</span> <span class="n">model</span>
+<span class="kn">from</span> <span class="nn">danoan.correct_markdown.core.string_view</span> <span class="kn">import</span> <span class="n">StringView</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">TextIO</span><span class="p">,</span> <span class="n">Tuple</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+<span class="n">handler</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+<span class="n">handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(levelname)s</span><span class="s2">: </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="MarkdownView">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView">[docs]</a>
+<span class="k">class</span> <span class="nc">MarkdownView</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Find and replace plain-text content in a markdown string without disrupting markdown and html markups.</span>
+
+<span class="sd">    This class is designed to do replace operations in the plain-text content of a markdown string.</span>
+<span class="sd">    All markdown and html markups should remain the same and not be affected by a replace operation.</span>
+
+<span class="sd">    The only exception is when the plain-text string being replaced is spread over two or more</span>
+<span class="sd">    non-contiguous text segments. In this case, the new value is put in the first segment.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MarkdownView.SegmentType">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType">[docs]</a>
+    <span class="k">class</span> <span class="nc">SegmentType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="n">NoHtml</span> <span class="o">=</span> <span class="s2">&quot;no_html&quot;</span>
+        <span class="n">Html</span> <span class="o">=</span> <span class="s2">&quot;html&quot;</span></div>
+
+
+<div class="viewcode-block" id="MarkdownView.DiffOperation">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation">[docs]</a>
+    <span class="k">class</span> <span class="nc">DiffOperation</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+        <span class="n">Insert</span> <span class="o">=</span> <span class="s2">&quot;insert&quot;</span>
+        <span class="n">Delete</span> <span class="o">=</span> <span class="s2">&quot;delete&quot;</span>
+        <span class="n">Replace</span> <span class="o">=</span> <span class="s2">&quot;replace&quot;</span>
+        <span class="n">Equal</span> <span class="o">=</span> <span class="s2">&quot;equal&quot;</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_markdown</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">):</span>
+        <span class="n">pure_markdown</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">remove_html_tags</span><span class="p">(</span><span class="n">original_markdown</span><span class="p">)</span>
+        <span class="n">original_markdown</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">ss_text</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">pure_markdown</span><span class="p">)</span>
+        <span class="n">segments</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">Html</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">di</span> <span class="ow">in</span> <span class="n">api</span><span class="o">.</span><span class="n">text_diff</span><span class="p">(</span><span class="n">ss_text</span><span class="p">,</span> <span class="n">original_markdown</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">TextDiffMode</span><span class="o">.</span><span class="n">Letter</span><span class="p">):</span>
+            <span class="n">operation</span> <span class="o">=</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">DiffOperation</span><span class="p">(</span><span class="n">di</span><span class="o">.</span><span class="n">operation</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">DiffOperation</span><span class="o">.</span><span class="n">Replace</span><span class="p">:</span>
+                <span class="n">tags</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">extract_html_tags</span><span class="p">(</span><span class="n">di</span><span class="o">.</span><span class="n">new_value</span><span class="p">)</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">:</span>
+                    <span class="n">t_start</span><span class="p">,</span> <span class="n">t_end</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">di</span><span class="o">.</span><span class="n">new_value</span><span class="p">[</span><span class="n">pos</span><span class="p">:</span><span class="n">t_start</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">Html</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="n">di</span><span class="o">.</span><span class="n">new_value</span><span class="p">[</span><span class="n">t_start</span><span class="p">:</span><span class="n">t_end</span><span class="p">]</span>
+                    <span class="p">)</span>
+                    <span class="n">pos</span> <span class="o">=</span> <span class="n">t_end</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">DiffOperation</span><span class="o">.</span><span class="n">Insert</span><span class="p">:</span>
+                <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+                <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">Html</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">di</span><span class="o">.</span><span class="n">new_value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">DiffOperation</span><span class="o">.</span><span class="n">Equal</span><span class="p">:</span>
+                <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">di</span><span class="o">.</span><span class="n">original_value</span><span class="p">)</span>
+                <span class="n">segments</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">Html</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">operation</span> <span class="o">==</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">DiffOperation</span><span class="o">.</span><span class="n">Delete</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span>
+                    <span class="s2">&quot;Non expected delete operation:&quot;</span><span class="p">,</span> <span class="n">di</span><span class="o">.</span><span class="n">original_value</span><span class="p">,</span> <span class="n">di</span><span class="o">.</span><span class="n">new_value</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">SV</span> <span class="o">=</span> <span class="n">StringView</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span>
+
+<div class="viewcode-block" id="MarkdownView.find">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.find">[docs]</a>
+    <span class="k">def</span> <span class="nf">find</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">search_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_trailing_spaces</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Find the search value in the non new line text view and return the start and end indexes.</span>
+
+<span class="sd">        The start and end parameters limit the search to a substring.</span>
+<span class="sd">        If ignore_trailing_spaces then &quot;searched value&quot; will match &quot;searched    value&quot;.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">words</span> <span class="o">=</span> <span class="n">search_value</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_view</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">search_value</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">s</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">s</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">s</span><span class="p">,</span> <span class="n">s</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">search_value</span><span class="p">)</span>
+
+        <span class="n">p</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ignore_trailing_spaces</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="n">p</span> <span class="o">+=</span> <span class="sa">rf</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">w</span><span class="p">)</span><span class="si">}</span><span class="s2">[\s\n]*&quot;</span>
+
+            <span class="n">p</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">words</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+        <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">text_view</span><span class="p">[</span><span class="n">start</span><span class="p">:])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="p">:</span>
+            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">m_s</span><span class="p">,</span> <span class="n">m_e</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">span</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">start</span> <span class="o">+</span> <span class="n">m_s</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="n">m_e</span></div>
+
+
+<div class="viewcode-block" id="MarkdownView.replace">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.replace">[docs]</a>
+    <span class="k">def</span> <span class="nf">replace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t_start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">old_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Replace old value by new value in text view and update segments.</span>
+
+<span class="sd">        1. Find the indexes ts,te in the text view that corresponding to the old value.</span>
+<span class="sd">        2. Find the segments ms, me in the index that correspond to ts,te.</span>
+<span class="sd">        3. If ms==me then the old value is within the same segment and</span>
+<span class="sd">           we can do a simple replacement.</span>
+<span class="sd">        4. If ms!=me then the old value is spread over more than one segment.</span>
+<span class="sd">           We put the text content within (ms,me) segments of type text in</span>
+<span class="sd">           the segment ms (the first one) and do the replace operation there.</span>
+<span class="sd">           Next we erase the segments (ms+1...ms_end); and merge segments of</span>
+<span class="sd">           equal type that become contiguous after the delete operation.</span>
+<span class="sd">        5. We need to update the index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ti_start</span><span class="p">,</span> <span class="n">ti_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">old_value</span><span class="p">,</span> <span class="n">t_start</span><span class="p">)</span>
+
+        <span class="n">m_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="o">.</span><span class="n">get_mindex</span><span class="p">(</span><span class="n">ti_start</span><span class="p">,</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">)</span>
+        <span class="n">m_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="o">.</span><span class="n">get_mindex</span><span class="p">(</span><span class="n">ti_end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">m_start</span> <span class="o">==</span> <span class="n">m_end</span><span class="p">:</span>
+            <span class="n">suffix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">][</span><span class="n">ti_end</span><span class="p">:]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># In case of a delete, remove the whitespace</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">ti_start</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="n">new_value</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span> <span class="o">=</span> <span class="n">ti_start</span><span class="p">,</span> <span class="n">new_value</span> <span class="o">+</span> <span class="n">suffix</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">after</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">][</span><span class="n">ti_end</span><span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span> <span class="o">=</span> <span class="n">ti_start</span><span class="p">,</span> <span class="n">new_value</span> <span class="o">+</span> <span class="n">after</span>
+
+            <span class="n">delete</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">m_start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">m_end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">view_name</span> <span class="o">==</span> <span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">:</span>
+                    <span class="n">delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="o">*</span><span class="n">delete</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">text_view</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MarkdownView.get_full_content">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.get_full_content">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_full_content</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string joining all pure markdown, HTML tags and plain-text segments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="o">.</span><span class="n">get_content</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MarkdownView.get_no_html_view">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.get_no_html_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_no_html_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string joining all pure markdown and plain-text segments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="MarkdownView.get_html_view">
+<a class="viewcode-back" href="../../../../reference/danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView.get_html_view">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_html_view</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a string joining HTML tags segments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">Html</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">SV</span><span class="p">[</span><span class="n">MarkdownView</span><span class="o">.</span><span class="n">SegmentType</span><span class="o">.</span><span class="n">NoHtml</span><span class="p">][</span><span class="n">key</span><span class="p">]</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Daniel Martins Antunes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

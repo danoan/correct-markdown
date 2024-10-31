@@ -1,0 +1,21 @@
+danoan.correct\_markdown.cli namespace
+======================================
+
+.. py:module:: danoan.correct_markdown.cli
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   danoan.correct_markdown.cli.commands
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   danoan.correct_markdown.cli.cli
+   danoan.correct_markdown.cli.utils

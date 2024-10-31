@@ -1,0 +1,7 @@
+danoan.correct\_markdown.cli.commands.collect\_bold module
+==========================================================
+
+.. automodule:: danoan.correct_markdown.cli.commands.collect_bold
+   :members:
+   :undoc-members:
+   :show-inheritance:

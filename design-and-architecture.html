@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Design and Architecture &mdash; correct-markdown 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=a3d76245" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="API Reference" href="api-reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            correct-markdown
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting started with Correct Markdown</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Design and Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#stringview">StringView</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#context">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decision">Decision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#status">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#consequences">Consequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#markdownview-remove-html-tags-but-preserve-markdown-markup-tags">MarkdownView: Remove HTML tags, but preserve markdown markup tags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Decision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4">Consequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#diff-items-diff-by-character-and-diff-by-word">Diff Items: Diff by character and diff by word</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id5">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6">Decision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8">Consequences</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#markdownview-ignore-white-spaces-and-new-lines-during-find-operation">MarkdownView: Ignore white spaces and new lines during find operation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id9">Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10">Decision</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id12">Consequences</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">correct-markdown</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Design and Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/design-and-architecture.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="design-and-architecture">
+<h1>Design and Architecture<a class="headerlink" href="#design-and-architecture" title="Link to this heading"></a></h1>
+<p>This document lists the design and architectural decisions taken
+during the development of Correct Markdown. It follows
+the <a class="reference external" href="https://cognitect.com/blog/2011/11/15/documenting-architecture-decisions.html">Architecture Decisions</a> format.</p>
+<section id="stringview">
+<h2>StringView<a class="headerlink" href="#stringview" title="Link to this heading"></a></h2>
+<p><strong>Date: (2024-10-01)</strong></p>
+<section id="context">
+<h3>Context<a class="headerlink" href="#context" title="Link to this heading"></a></h3>
+<p>The project goal is to correct pieces of text in a markdown document. This task cannot be done
+with a straightforward find and replace because the markdown document contains information other
+than plain-text, namely markdown tags and, eventually, html tags.</p>
+<p>We need a data-structure to isolate markup information from plain-text information.</p>
+</section>
+<section id="decision">
+<h3>Decision<a class="headerlink" href="#decision" title="Link to this heading"></a></h3>
+<p>Create StringView data-structure. This data-structure maintains an index and a view object
+where the subsets of a string partition can be edited independently from each other.</p>
+<p>To initialize a StringView we have to pass a partition of string. A partition is a collection of
+disjoint sets which the union gives the original string. A partition is described by a dictionary
+where the key represents the set name (view name) and the value represents the list of strings
+the set is made of.</p>
+<p>During initialization we build the index and view objects. The index is a list of <code class="docutils literal notranslate"><span class="pre">ViewSegmentItem</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">ViewSegmentItem</span><span class="p">:</span>
+    <span class="n">view_name</span><span class="p">:</span> <span class="n">Any</span>
+    <span class="n">master_index</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">segment_index</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+</div>
+<p>After initialization, one can update a view without affecting the others.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">segments</span> <span class="o">=</span> <span class="p">{</span>
+<span class="gp">... </span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;October journal&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span><span class="s2">&quot;October first&quot;</span><span class="p">,</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;Today it rained.&quot;</span><span class="p">],</span>
+<span class="gp">... </span> <span class="s2">&quot;markup&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&lt;h1&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;/h1&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;h2&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;/h2&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">,</span><span class="s2">&quot;&quot;</span><span class="p">]</span>
+<span class="gp">... </span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">danoan.correct_markdown.core.string_view</span> <span class="kn">import</span> <span class="n">StringView</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span> <span class="o">=</span> <span class="n">StringView</span><span class="p">(</span><span class="n">segments</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+<span class="go">&#39;October journal\n\nOctober first\n\nToday it rained.&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="p">[</span><span class="s2">&quot;markup&quot;</span><span class="p">]</span>
+<span class="go">&#39;&lt;h1&gt;&lt;/h1&gt;&lt;h2&gt;&lt;/h2&gt;&#39;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="o">.</span><span class="n">get_content</span><span class="p">()</span>
+<span class="go">&#39;&lt;h1&gt;October journal&lt;/h1&gt;\n\n&lt;h2&gt;October first&lt;/h2&gt;\n\nToday it rained.&#39;</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">SV</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;October first&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">s</span><span class="p">,</span> <span class="s2">&quot;Monday, October first</span><span class="se">\n\n</span><span class="s2">Today was sunny!&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+<span class="go">&#39;October journal\n\nMonday, October first\n\nToday was sunny!&#39;</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">SV</span><span class="o">.</span><span class="n">get_content</span><span class="p">()</span>
+<span class="go">&#39;&lt;h1&gt;October journal&lt;/h1&gt;\n\n&lt;h2&gt;Monday, October first&lt;/h2&gt;\n\nToday was sunny!&#39;</span>
+
+</pre></div>
+</div>
+<p>Notice that to replace a view segment we can bracket reference the view and then assign it
+to an integer and a string. The integer represents the position in the view from where to
+start the reassignment and the string is the new content.</p>
+</section>
+<section id="status">
+<h3>Status<a class="headerlink" href="#status" title="Link to this heading"></a></h3>
+<p>Implemented.</p>
+</section>
+<section id="consequences">
+<h3>Consequences<a class="headerlink" href="#consequences" title="Link to this heading"></a></h3>
+<p>Refactor strikethrough-items to start using StringView. It is likely the case that a helper
+data-structure will be needed to address special requirements for the markdown correction
+feature.</p>
+</section>
+</section>
+<section id="markdownview-remove-html-tags-but-preserve-markdown-markup-tags">
+<h2>MarkdownView: Remove HTML tags, but preserve markdown markup tags<a class="headerlink" href="#markdownview-remove-html-tags-but-preserve-markdown-markup-tags" title="Link to this heading"></a></h2>
+<p><strong>Date: (2024-10-05)</strong></p>
+<section id="id1">
+<h3>Context<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>In a first moment, the diff items were collected from two plain-text views. The first was
+derived from the original markdown file and the second from the correction of the latter.</p>
+<p>However, this approach was the source of undesirable editions in the corrected markdown.
+For example:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="err">**</span><span class="kc">t</span><span class="err">ou</span><span class="kc">ffus</span><span class="err">**</span><span class="w"> </span><span class="err">qui</span><span class="w"> </span><span class="err">par</span><span class="kc">f</span><span class="err">ois</span><span class="w"> </span><span class="err">o</span><span class="kc">n</span><span class="w"> </span><span class="err">a</span>
+<span class="err">Di</span><span class="kc">ff</span><span class="w"> </span><span class="err">I</span><span class="kc">te</span><span class="err">m</span><span class="p">:</span><span class="w"> </span><span class="kc">t</span><span class="err">ou</span><span class="kc">ffus</span><span class="w"> </span><span class="err">qui</span><span class="w"> </span><span class="mi">-</span><span class="err">&gt;</span><span class="w"> </span><span class="kc">t</span><span class="err">ou</span><span class="kc">ffus</span><span class="w"> </span><span class="err">que</span>
+
+<span class="err">E</span><span class="kc">n</span><span class="err">ha</span><span class="kc">n</span><span class="err">ced</span><span class="w"> </span><span class="err">MD</span><span class="p">:</span>
+<span class="err">**</span><span class="kc">t</span><span class="err">ou</span><span class="kc">ffus</span><span class="w"> </span><span class="err">que**</span><span class="w"> </span><span class="err">par</span><span class="kc">f</span><span class="err">ois</span><span class="w"> </span><span class="err">o</span><span class="kc">n</span><span class="w"> </span><span class="err">a</span>
+</pre></div>
+</div>
+<p>Therefore, we start processing the pure markdown view instead, that is, markdown markups are accepted
+but not html markup tags. In the MarkdownView class we start using the base text as the pure markdown
+view, and we instantiate the StringView with Html and NoHtml segments.</p>
+</section>
+<section id="id2">
+<h3>Decision<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Accepted.</p>
+</section>
+<section id="id3">
+<h3>Status<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Implemented.</p>
+</section>
+<section id="id4">
+<h3>Consequences<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>We use LLM to correct the original text. It is more likely that the LLM will generate more reliable
+output for plain-text input, but we need to edit the prompt to also accept pure markdown input.</p>
+</section>
+</section>
+<section id="diff-items-diff-by-character-and-diff-by-word">
+<h2>Diff Items: Diff by character and diff by word<a class="headerlink" href="#diff-items-diff-by-character-and-diff-by-word" title="Link to this heading"></a></h2>
+<p><strong>Date: (2024-10-07)</strong></p>
+<section id="id5">
+<h3>Context<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>Our goal is to correct a given markdown file (original) and generate another (corrected)
+that is as similar as possible to the original one. That is, we only apply corrections to
+words, not formatting. The formatting should be kept the same as the original and that includes
+white spaces and new lines.</p>
+<p>The diff items can be computed using either the <code class="docutils literal notranslate"><span class="pre">word-basis</span></code> or the <code class="docutils literal notranslate"><span class="pre">charater-basis</span></code> mode. In the
+first, trailing spaces and new lines are ignores while in the second they are not.</p>
+<p>From an application point of view, we are interested in a word-basis diff to identify the parts
+of the text that differ from the original and corrected version. The diff items generated by the
+word-basis mode are used to generate the explanations of the corrections. It is not helpful
+to pass formatting differences to the explanation prompt.</p>
+<p>On the other hand, to create the StringView segments, I need to use the <code class="docutils literal notranslate"><span class="pre">character-basis</span></code> mode
+otherwise we cannot reconstruct the original string correctly.</p>
+</section>
+<section id="id6">
+<h3>Decision<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>Accepted.</p>
+</section>
+<section id="id7">
+<h3>Status<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>Implemented.</p>
+</section>
+<section id="id8">
+<h3>Consequences<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>The joiner string in <code class="docutils literal notranslate"><span class="pre">word-basis</span></code> is a space; while in <code class="docutils literal notranslate"><span class="pre">character-basis</span></code> is the empty string.</p>
+</section>
+</section>
+<section id="markdownview-ignore-white-spaces-and-new-lines-during-find-operation">
+<h2>MarkdownView: Ignore white spaces and new lines during find operation<a class="headerlink" href="#markdownview-ignore-white-spaces-and-new-lines-during-find-operation" title="Link to this heading"></a></h2>
+<p><strong>Date: (2024-10-09)</strong></p>
+<section id="id9">
+<h3>Context<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>The diff items are computed using <code class="docutils literal notranslate"><span class="pre">word-basis</span></code> mode and this mode ignore white spaces and new lines.
+Therefore, we cannot reconstruct the exact string present in the text from the diff items. New lines
+and white spaces might be missing. That’s why, during the find operation, we use regex to ignore
+trailing white spaces and new lines.</p>
+</section>
+<section id="id10">
+<h3>Decision<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>Accepted.</p>
+</section>
+<section id="id11">
+<h3>Status<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>Implemented.</p>
+</section>
+<section id="id12">
+<h3>Consequences<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<p>Use <code class="docutils literal notranslate"><span class="pre">[\s\n]*</span></code> between the words of the search_value in the find method of MarkdownView.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="api-reference.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Daniel Martins Antunes.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

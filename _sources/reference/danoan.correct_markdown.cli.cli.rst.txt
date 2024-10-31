@@ -1,0 +1,7 @@
+danoan.correct\_markdown.cli.cli module
+=======================================
+
+.. automodule:: danoan.correct_markdown.cli.cli
+   :members:
+   :undoc-members:
+   :show-inheritance:

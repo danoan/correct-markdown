@@ -1,0 +1,7 @@
+danoan.correct\_markdown.cli.commands.corrected\_view module
+============================================================
+
+.. automodule:: danoan.correct_markdown.cli.commands.corrected_view
+   :members:
+   :undoc-members:
+   :show-inheritance:

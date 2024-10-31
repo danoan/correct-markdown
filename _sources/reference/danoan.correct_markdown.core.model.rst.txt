@@ -1,0 +1,7 @@
+danoan.correct\_markdown.core.model module
+==========================================
+
+.. automodule:: danoan.correct_markdown.core.model
+   :members:
+   :undoc-members:
+   :show-inheritance:

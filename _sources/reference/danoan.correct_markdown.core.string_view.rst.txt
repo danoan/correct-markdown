@@ -1,0 +1,7 @@
+danoan.correct\_markdown.core.string\_view module
+=================================================
+
+.. automodule:: danoan.correct_markdown.core.string_view
+   :members:
+   :undoc-members:
+   :show-inheritance:
