@@ -70,9 +70,7 @@ class MarkdownView:
                 )
 
         self.SV = StringView(segments)
-        self.text_view_no_newline = self.SV[MarkdownView.SegmentType.NoHtml].replace(
-            "\n", " "
-        )
+        self.text_view = self.SV[MarkdownView.SegmentType.NoHtml]
 
     def find(
         self,
@@ -92,7 +90,7 @@ class MarkdownView:
 
         words = search_value.split()
         if len(words) == 0:
-            s = self.text_view_no_newline.find(search_value, start, end)
+            s = self.text_view.find(search_value, start, end)
             if s == -1:
                 return s, s
             else:
@@ -101,13 +99,13 @@ class MarkdownView:
         p = ""
         if ignore_trailing_spaces:
             for w in words[:-1]:
-                p += rf"{re.escape(w)}\s*"
+                p += rf"{re.escape(w)}[\s\n]*"
 
             p += f"{re.escape(words[-1])}"
         else:
             p = " ".join(words)
 
-        m = re.search(p, self.text_view_no_newline[start:])
+        m = re.search(p, self.text_view[start:])
         if not m:
             return -1, -1
 
@@ -154,9 +152,7 @@ class MarkdownView:
                     delete.append(i)
             self.SV.remove(*delete)
 
-        self.text_view_no_newline = self.SV[MarkdownView.SegmentType.NoHtml].replace(
-            "\n", " "
-        )
+        self.text_view = self.SV[MarkdownView.SegmentType.NoHtml]
 
     def get_full_content(self) -> str:
         """
