@@ -8,7 +8,6 @@
 ######################################
 # Input
 ######################################
-
 ifndef BUILD_FOLDER
 $(error "BUILD_FOLDER is not defined")
 endif

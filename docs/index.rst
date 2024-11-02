@@ -9,15 +9,7 @@ Start here
    :maxdepth: 1
 
    getting-started
-
-
-How-to guides
-=============
-
-.. toctree::
-   :maxdepth: 1
-
-   how-to/
+   llm-programming
 
 
 Reference guides
