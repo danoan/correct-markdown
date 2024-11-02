@@ -11,7 +11,7 @@ local_folder = "prompts-folder"
 
 [prompt.versioning]
 alternative-expression = "v2.0.0"
-correct-text = "v3.0.0"
+correct-text = "v3.1.1"
 reverse-definition = "v1.0.0"
 word-definition = "v1.0.0"
 translate = "v1.0.0"
