@@ -3,11 +3,10 @@ openai_key = ""
 model = "gpt-3.5-turbo"
 use_cache = true
 cache_path = ""
-local_folder = "prompts-folder"
 
 [prompt]
 git_user = "danoan-prompts"
-local_folder = "prompts-folder"
+prompt_collection_folder = "prompts-folder"
 
 [prompt.versioning]
 alternative-expression = "v2.0.0"
