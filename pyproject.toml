@@ -20,7 +20,7 @@ classifiers = [
   "Programming Language :: Python :: Implementation :: CPython",
   "Programming Language :: Python :: Implementation :: PyPy",
 ]
-dependencies = ["llm-assistant @ git+https://github.com/danoan/llm-assistant.git@v0.3-alpha","beautifulsoup4","markdown","jinja2"]
+dependencies = ["llm-assistant @ git+https://github.com/danoan/llm-assistant.git@v0.3","beautifulsoup4","markdown","jinja2"]
 [project.urls]
 Documentation = "https://github.com/danoan/correct-markdown#readme"
 Issues = "https://github.com/danoan/correct-markdown"
