@@ -81,7 +81,7 @@ def text_diff(
         raise RuntimeError(f"Unexpected mode: {mode}")
 
     while True:
-        sm = difflib.SequenceMatcher(None, seq1, seq2)
+        sm = difflib.SequenceMatcher(None, seq1, seq2, autojunk=False)
         for tag, i1, i2, j1, j2 in sm.get_opcodes():
             if update_a and tag == "equal":
                 continue
@@ -94,13 +94,14 @@ def text_diff(
             yield DiffItem(context, action_segment, joiner.join(seq2[j1:j2]), tag)
 
             if update_a:
-                seq1 = seq2[:j2] + seq1[i2:]
+                seq1 = seq2[max(j2 - 10, 0) : j2] + seq1[i2:]
+                seq2 = seq2[max(j2 - 10, 0) :]
                 break
         else:
             break
 
 
-def strikethrough_errors(markdown_stream: TextIO, diff_items: List[DiffItem]):
+def strikethrough_errors(markdown_stream: TextIO, diff_items: List[DiffItem]) -> str:
     def insert(item: DiffItem, index: int):
         footnote_index = f"[^{index}]"
         return f"{item.new_value}{footnote_index} "
@@ -116,7 +117,7 @@ def strikethrough_errors(markdown_stream: TextIO, diff_items: List[DiffItem]):
     return utils.render_diff_view(markdown_stream, diff_items, insert, delete, replace)
 
 
-def apply_corrections(markdown_stream: TextIO, diff_items: List[DiffItem]):
+def apply_corrections(markdown_stream: TextIO, diff_items: List[DiffItem]) -> str:
     def insert(item: DiffItem, index: int):
         return item.new_value
 

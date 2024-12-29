@@ -90,7 +90,7 @@ class MarkdownView:
 
         words = search_value.split()
         if len(words) == 0:
-            s = self.text_view.find(search_value, start, end)
+            s = self.text_view.find(re.escape(search_value), start, end)
             if s == -1:
                 return s, s
             else:

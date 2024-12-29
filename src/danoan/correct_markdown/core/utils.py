@@ -47,16 +47,11 @@ def apply_diff(mv: MarkdownView, item: DiffItem, start: int = 0) -> Tuple[int, i
     if s == -1:
         raise ValueError({"message": "Value not found", "search_value": search_value})
 
-    if item.operation == "insert":
-        start, end = s, s
-    elif item.operation == "delete":
-        end = start
-    elif item.operation == "replace":
-        start, end = mv.find(item.original_value, s)
+    start = s
+    end = e
 
     mv.replace(start, old_value, item.new_value)
-    if start + len(item.new_value) > end:
-        end = start + len(item.new_value)
+    end = start + len(item.new_value)
 
     return start, end
 
@@ -67,7 +62,7 @@ def render_diff_view(
     insert=None,
     delete=None,
     replace=None,
-):
+) -> str:
     mv = MarkdownView(markdown_stream)
     start = 0
     for index, item in enumerate(diff_items, 1):

@@ -41,7 +41,7 @@ PER=llm-assistant run
 MDE=correct-markdown
 ACT=. $(VENV_FOLDER)/bin/activate
 
-P_A=${PER} correct-text --p language ${LANGUAGE} --p style same --p format markdown
+P_A=${PER} correct-text --p language ${LANGUAGE} --p style same --p input-format markdown
 P_B=${PER} explain-correction --p language ${LANGUAGE}
 P_C=${PER} word-definition  --p language ${LANGUAGE}
 P_D=${PER} summarize --p language ${LANGUAGE}
@@ -74,11 +74,12 @@ ${OUTPUT_FOLDER}/pin_original.json: ${OUTPUT_FOLDER}/no_html_view.md | ${OUTPUT_
 	jq --null-input --rawfile message $< '{"message":$$message}' > $@
 
 ${OUTPUT_FOLDER}/correct.json: ${OUTPUT_FOLDER}/pin_original.json | ${VENV_FOLDER}
-	${ACT} && cat $< | ${P_A} > $@
+	# The extra jq instruction is to parse eventual json string repr output into a json object
+	${ACT} && cat $< | ${P_A} | jq "." > $@
 	# ${ACT} && cat $< | ${P_A}
 
 ${OUTPUT_FOLDER}/pin_correct.json: ${OUTPUT_FOLDER}/correct.json
-	cat $< | jq '{"message":.message}' > $@
+	cat $< | jq -r '{"message":.}' > $@
 
 ######################################
 # Explain Errors
