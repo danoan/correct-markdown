@@ -1,8 +1,16 @@
-from danoan.correct_markdown.core.markdown_view import MarkdownView
-from danoan.correct_markdown.core.model import DiffItem
-
+from bs4 import BeautifulSoup
+import markdown  # type: ignore
 import re
 from typing import List, Tuple, TextIO
+
+
+def get_plain_text_from_markdown(markdown_stream: TextIO) -> str:
+    """
+    Removes all markdown markup from a string.
+    """
+    html = markdown.markdown(markdown_stream.read())
+    soup = BeautifulSoup(html, "html.parser")
+    return soup.get_text()
 
 
 def extract_html_tags(html: str) -> List[Tuple[str, int, int]]:
@@ -30,50 +38,23 @@ def extract_html_tags(html: str) -> List[Tuple[str, int, int]]:
     return sorted(tag_indexes, key=lambda x: x[2])
 
 
-def apply_diff(mv: MarkdownView, item: DiffItem, start: int = 0) -> Tuple[int, int]:
+def remove_html_tags(string_stream: TextIO) -> str:
     """
-    Apply correction in markdown view contained in the diff item.
-
-    We use the item.original_value and its after context to find the correct
-    position in the markdown view where the diff operation will take place. The
-    after context is important to avoid false positives, which can be quite common
-    when the original_value is short such as `the`,` one` and so on.
+    Removes all html tags from a string.
     """
-    old_value = f"{item.original_value}"
+    content = string_stream.read()
 
-    after = item.context.split("___")[1]
-    search_value = f"{item.original_value} {after}"
-    s, e = mv.find(search_value, start)
-    if s == -1:
-        raise ValueError({"message": "Value not found", "search_value": search_value})
+    last = 0
+    no_html = ""
+    tags = extract_html_tags(content)
+    for tag in tags:
+        name, i, j = tag
+        if name == "no_html":
+            no_html += content[i:j]
+        else:
+            no_html += content[last:i]
+        last = j
 
-    start = s
-    end = e
+    no_html += content[last:]
 
-    mv.replace(start, old_value, item.new_value)
-    end = start + len(item.new_value)
-
-    return start, end
-
-
-def render_diff_view(
-    markdown_stream: TextIO,
-    diff_items: List[DiffItem],
-    insert=None,
-    delete=None,
-    replace=None,
-) -> str:
-    mv = MarkdownView(markdown_stream)
-    start = 0
-    for index, item in enumerate(diff_items, 1):
-        if item.operation == "insert" and insert:
-            item.new_value = insert(item, index)
-        elif item.operation == "delete":
-            item.new_value = delete(item, index)
-        elif item.operation == "replace":
-            item.new_value = replace(item, index)
-
-        s, e = apply_diff(mv, item, start)
-        start = e
-
-    return mv.get_full_content()
+    return no_html

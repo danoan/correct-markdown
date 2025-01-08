@@ -2,49 +2,16 @@ from danoan.correct_markdown.core.markdown_view import MarkdownView
 from danoan.correct_markdown.core import utils
 from danoan.correct_markdown.core.model import DiffItem, TextDiffMode
 
-from bs4 import BeautifulSoup
 import difflib
 import logging
-import markdown  # type: ignore
 import sys
-from typing import Generator, List, Optional, TextIO
+from typing import Generator, List, TextIO, Tuple
 
 logger = logging.getLogger(__file__)
 handler = logging.StreamHandler(sys.stderr)
 handler.setLevel(logging.INFO)
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
-
-
-def get_plain_text_from_markdown(markdown_stream: TextIO) -> str:
-    """
-    Removes all markdown markup from a string.
-    """
-    html = markdown.markdown(markdown_stream.read())
-    soup = BeautifulSoup(html, "html.parser")
-    return soup.get_text()
-
-
-def remove_html_tags(string_stream: TextIO) -> str:
-    """
-    Removes all html tags from a string.
-    """
-    content = string_stream.read()
-
-    last = 0
-    no_html = ""
-    tags = utils.extract_html_tags(content)
-    for tag in tags:
-        name, i, j = tag
-        if name == "no_html":
-            no_html += content[i:j]
-        else:
-            no_html += content[last:i]
-        last = j
-
-    no_html += content[last:]
-
-    return no_html
 
 
 def text_diff(
@@ -114,7 +81,7 @@ def strikethrough_errors(markdown_stream: TextIO, diff_items: List[DiffItem]) ->
         footnote_index = f"[^{index}]"
         return f"~~{item.original_value}~~ {item.new_value}{footnote_index}"
 
-    return utils.render_diff_view(markdown_stream, diff_items, insert, delete, replace)
+    return render_diff_view(markdown_stream, diff_items, insert, delete, replace)
 
 
 def apply_corrections(markdown_stream: TextIO, diff_items: List[DiffItem]) -> str:
@@ -127,4 +94,53 @@ def apply_corrections(markdown_stream: TextIO, diff_items: List[DiffItem]) -> st
     def replace(item: DiffItem, index: int):
         return item.new_value
 
-    return utils.render_diff_view(markdown_stream, diff_items, insert, delete, replace)
+    return render_diff_view(markdown_stream, diff_items, insert, delete, replace)
+
+
+def apply_diff(mv: MarkdownView, item: DiffItem, start: int = 0) -> Tuple[int, int]:
+    """
+    Apply correction in markdown view contained in the diff item.
+
+    We use the item.original_value and its after context to find the correct
+    position in the markdown view where the diff operation will take place. The
+    after context is important to avoid false positives, which can be quite common
+    when the original_value is short such as `the`,` one` and so on.
+    """
+    old_value = f"{item.original_value}"
+
+    after = item.context.split("___")[1]
+    search_value = f"{item.original_value} {after}"
+    s, e = mv.find(search_value, start)
+    if s == -1:
+        raise ValueError({"message": "Value not found", "search_value": search_value})
+
+    start = s
+    end = e
+
+    mv.replace(start, old_value, item.new_value)
+    end = start + len(item.new_value)
+
+    return start, end
+
+
+def render_diff_view(
+    markdown_stream: TextIO,
+    diff_items: List[DiffItem],
+    insert=None,
+    delete=None,
+    replace=None,
+) -> str:
+    mv = MarkdownView(markdown_stream)
+    start = 0
+    for index, item in enumerate(diff_items, 1):
+        if item.operation == "insert" and insert:
+            item.new_value = insert(item, index)
+        elif item.operation == "delete":
+            item.new_value = delete(item, index)
+        elif item.operation == "replace":
+            item.new_value = replace(item, index)
+
+        s, e = apply_diff(mv, item, start)
+        start = e
+
+    return mv.get_full_content()

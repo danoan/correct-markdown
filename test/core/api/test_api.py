@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api, model
+from danoan.correct_markdown.core import api, model, utils
 
 import io
 from pathlib import Path
@@ -74,26 +74,14 @@ def test_text_diff_letter_and_update():
     assert diff_items[2].operation == "insert"
 
 
-def test_get_plain_text_from_markdown():
-    ss = io.StringIO(
-        '# The ultimate guide\n\nThe **ultimate guide** will lead you to the <span style="color:blue">path</span> you want to achieve.'
-    )
-
-    plain_text = api.get_plain_text_from_markdown(ss)
-    assert (
-        plain_text
-        == "The ultimate guide\nThe ultimate guide will lead you to the path you want to achieve."
-    )
-
-
 def test_strikethrough_errors_a():
     original = INPUT_FOLDER / "strikethrough" / "test_a" / "original.md"
     corrected = INPUT_FOLDER / "strikethrough" / "test_a" / "corrected.md"
     expected = INPUT_FOLDER / "strikethrough" / "test_a" / "expected.md"
 
     with open(original) as fa, open(corrected) as fb, open(expected) as fc:
-        pa = api.remove_html_tags(fa)
-        pb = api.remove_html_tags(fb)
+        pa = utils.remove_html_tags(fa)
+        pb = utils.remove_html_tags(fb)
 
         fa.seek(0)
         fb.seek(0)
@@ -191,7 +179,7 @@ def test_get_no_html_view():
     original = INPUT_FOLDER / "get_markdown_only" / "original.md"
     expected = INPUT_FOLDER / "get_markdown_only" / "expected.md"
     with open(original) as fa, open(expected) as fb:
-        md_only = api.remove_html_tags(fa)
+        md_only = utils.remove_html_tags(fa)
         assert md_only == fb.read()
 
 

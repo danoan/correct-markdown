@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api, model, utils
+from danoan.correct_markdown.core import api, model
 from danoan.correct_markdown.core.markdown_view import MarkdownView
 
 import io
@@ -97,7 +97,7 @@ def test_f():
         for di in diff_items:
             if di.operation == "insert":
                 di.new_value += " "
-            s, e = utils.apply_diff(tv1, di, start)
+            s, e = api.apply_diff(tv1, di, start)
             start = e
 
         assert tv1.get_no_html_view() == tv2.get_no_html_view()

@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api, model
+from danoan.correct_markdown.core import api, model, utils
 from danoan.correct_markdown.core.string_view import StringView
 
 from enum import Enum
@@ -37,7 +37,7 @@ class MarkdownView:
         Equal = "equal"
 
     def __init__(self, original_markdown: TextIO):
-        pure_markdown = api.remove_html_tags(original_markdown)
+        pure_markdown = utils.remove_html_tags(original_markdown)
         original_markdown.seek(0)
 
         ss_text = io.StringIO(pure_markdown)
@@ -47,7 +47,7 @@ class MarkdownView:
         for di in api.text_diff(ss_text, original_markdown, model.TextDiffMode.Letter):
             operation = MarkdownView.DiffOperation(di.operation)
             if operation == MarkdownView.DiffOperation.Replace:
-                tags = api.extract_html_tags(di.new_value)
+                tags = utils.extract_html_tags(di.new_value)
                 pos = 0
                 for t in tags:
                     t_start, t_end = t[1:]

@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api, model
+from danoan.correct_markdown.core import api, model, utils
 
 import io
 import json
@@ -8,12 +8,12 @@ from typing import List, TextIO
 
 def get_diff_items(text_a: TextIO, text_b: TextIO) -> List[model.DiffItem]:
     ss_a = io.StringIO()
-    # ss_a.write(api.get_plain_text_from_markdown(text_a))
-    ss_a.write(api.remove_html_tags(text_a))
+    # ss_a.write(utils.get_plain_text_from_markdown(text_a))
+    ss_a.write(utils.remove_html_tags(text_a))
 
     ss_b = io.StringIO()
-    # ss_b.write(api.get_plain_text_from_markdown(text_b))
-    ss_b.write(api.remove_html_tags(text_b))
+    # ss_b.write(utils.get_plain_text_from_markdown(text_b))
+    ss_b.write(utils.remove_html_tags(text_b))
 
     ss_a.seek(0)
     ss_b.seek(0)
