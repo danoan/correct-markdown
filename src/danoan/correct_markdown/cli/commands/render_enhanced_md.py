@@ -40,7 +40,6 @@ def __render_enhanced_md__(metadata: Path, **kwargs):
         _m = json.load(f)
         m = {}
         m["markdown_file"] = _m["MarkdownFile"]
-        m["title"] = _m["Title"]
         m["original"] = _m["Original"]
         m["corrected"] = _m["Corrected"]
         m["corrections_explanations"] = _m["CorrectionsExplanations"]

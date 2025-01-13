@@ -14,7 +14,6 @@ class DiffItem:
 @dataclass
 class Metadata:
     markdown_file: str
-    title: str
     original: str
     corrected: str
     corrections_explanations: List[str]
