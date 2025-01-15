@@ -1,5 +1,4 @@
 from danoan.correct_markdown.core.markdown_view import MarkdownView
-from danoan.correct_markdown.core import utils
 from danoan.correct_markdown.core.model import DiffItem, TextDiffMode
 
 import difflib
@@ -130,7 +129,7 @@ def render_diff_view(
     delete=None,
     replace=None,
 ) -> str:
-    mv = MarkdownView(markdown_stream)
+    mv = MarkdownView(markdown_stream, True)
     start = 0
     for index, item in enumerate(diff_items, 1):
         if item.operation == "insert" and insert:

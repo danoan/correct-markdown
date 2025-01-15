@@ -257,7 +257,7 @@ def test_E():
     with open(f"{INPUT_FOLDER}/test_E/expected.md") as f:
         expected_text_view = f.read()
 
-    mv = MarkdownView(io.StringIO(original_md))
+    mv = MarkdownView(io.StringIO(original_md), True)
     print(mv.text_view)
 
     assert mv.text_view == expected_text_view
