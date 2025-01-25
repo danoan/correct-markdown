@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>danoan.correct_markdown.core.markdown_view module &mdash; correct-markdown 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a3d76245" />
 
@@ -79,8 +79,35 @@
   <section id="module-danoan.correct_markdown.core.markdown_view">
 <span id="danoan-correct-markdown-core-markdown-view-module"></span><h1>danoan.correct_markdown.core.markdown_view module<a class="headerlink" href="#module-danoan.correct_markdown.core.markdown_view" title="Link to this heading"></a></h1>
 <dl class="py class">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.DiffOperation">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">DiffOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#DiffOperation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.DiffOperation" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.DiffOperation.Delete">
+<span class="sig-name descname"><span class="pre">Delete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'delete'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.DiffOperation.Delete" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.DiffOperation.Equal">
+<span class="sig-name descname"><span class="pre">Equal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'equal'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.DiffOperation.Equal" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.DiffOperation.Insert">
+<span class="sig-name descname"><span class="pre">Insert</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'insert'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.DiffOperation.Insert" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.DiffOperation.Replace">
+<span class="sig-name descname"><span class="pre">Replace</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'replace'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.DiffOperation.Replace" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">MarkdownView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#MarkdownView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">MarkdownView</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keep_markdown_tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#MarkdownView"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Find and replace plain-text content in a markdown string without disrupting markdown and html markups.</p>
 <p>This class is designed to do replace operations in the plain-text content of a markdown string.
@@ -89,53 +116,12 @@ All markdown and html markups should remain the same and not be affected by a re
 non-contiguous text segments. In this case, the new value is put in the first segment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>original_markdown</strong> (<em>TextIO</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>original_markdown</strong> (<em>TextIO</em>)</p></li>
+<li><p><strong>keep_markdown_tags</strong> (<em>bool</em>)</p></li>
+</ul>
 </dd>
 </dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DiffOperation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#MarkdownView.DiffOperation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Delete">
-<span class="sig-name descname"><span class="pre">Delete</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'delete'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Delete" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Equal">
-<span class="sig-name descname"><span class="pre">Equal</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'equal'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Equal" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Insert">
-<span class="sig-name descname"><span class="pre">Insert</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'insert'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Insert" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Replace">
-<span class="sig-name descname"><span class="pre">Replace</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'replace'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.DiffOperation.Replace" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">SegmentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#MarkdownView.SegmentType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType" title="Link to this definition"></a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
-<p>An enumeration.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType.Html">
-<span class="sig-name descname"><span class="pre">Html</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'html'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType.Html" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType.NoHtml">
-<span class="sig-name descname"><span class="pre">NoHtml</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'no_html'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.SegmentType.NoHtml" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py method">
 <dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.MarkdownView.find">
 <span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">search_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_trailing_spaces</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#MarkdownView.find"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.MarkdownView.find" title="Link to this definition"></a></dt>
@@ -217,6 +203,85 @@ equal type that become contiguous after the delete operation.</p></li>
 </dl>
 </dd></dl>
 
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.SegmentType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">SegmentType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#SegmentType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.SegmentType" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.SegmentType.EditableContent">
+<span class="sig-name descname"><span class="pre">EditableContent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'no_html'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.SegmentType.EditableContent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.SegmentType.NoEditableContent">
+<span class="sig-name descname"><span class="pre">NoEditableContent</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'html'</span></em><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.SegmentType.NoEditableContent" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.build_plain_text_segments">
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">build_plain_text_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#build_plain_text_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.build_plain_text_segments" title="Link to this definition"></a></dt>
+<dd><p>Create StringView segments for a markdown document.</p>
+<p>The EditableContent will contain plain text and no markdown markups. That
+is.</p>
+<p class="rubric">Example</p>
+<p>original_markdown: &lt;span&gt;Today is a <strong>wonderful</strong> day!&lt;/span&gt;</p>
+<p>EditableContent: Today is a wonderful day!
+NoEditableContent: &lt;span&gt;****&lt;/span&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>original_markdown</strong> (<em>TextIO</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.build_pure_markdown_segments">
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">build_pure_markdown_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">original_markdown</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#build_pure_markdown_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.build_pure_markdown_segments" title="Link to this definition"></a></dt>
+<dd><p>Create StringView segments for a markdown document.</p>
+<p>The EditableContent will contain plain text and also markdown markups. That
+is.</p>
+<p class="rubric">Example</p>
+<p>original_markdown: &lt;span&gt;Today is a <strong>wonderful</strong> day!&lt;/span&gt;</p>
+<p>EditableContent: Today is a <strong>wonderful</strong> day!
+NoEditableContent: &lt;span&gt;&lt;/span&gt;</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>original_markdown</strong> (<em>TextIO</em>)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.markdown_view.build_segments">
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.markdown_view.</span></span><span class="sig-name descname"><span class="pre">build_segments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">base_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_string</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">equal</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/markdown_view.html#build_segments"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.markdown_view.build_segments" title="Link to this definition"></a></dt>
+<dd><p>Create StringView segments from a list of diffs between a compare string and a base string.</p>
+<p class="rubric">Example</p>
+<p>base_string:    &lt;span&gt;Today is a wonderful day!&lt;/span&gt;
+compare_string: Today is a wonderful day!</p>
+<dl class="simple">
+<dt>diffs:</dt><dd><ul class="simple">
+<li><p>Insert(&lt;span&gt;)</p></li>
+<li><p>Equal(Today is a wonderful day!)</p></li>
+<li><p>Insert(&lt;/span&gt;</p></li>
+</ul>
+</dd>
+</dl>
+<p>The diff events are used to arbitrate how the string segments are created.
+In the example above, one could separate html tags from text content.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>segments</strong> (<em>Dict</em><em>[</em><em>Any</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>base_string</strong> (<em>TextIO</em>)</p></li>
+<li><p><strong>compare_string</strong> (<em>TextIO</em>)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </section>

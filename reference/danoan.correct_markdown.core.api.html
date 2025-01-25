@@ -7,7 +7,7 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>danoan.correct_markdown.core.api module &mdash; correct-markdown 0.1.0 documentation</title>
-      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=a3d76245" />
 
@@ -80,24 +80,13 @@
 <span id="danoan-correct-markdown-core-api-module"></span><h1>danoan.correct_markdown.core.api module<a class="headerlink" href="#module-danoan.correct_markdown.core.api" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="danoan.correct_markdown.core.api.apply_corrections">
-<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">apply_corrections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#apply_corrections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.apply_corrections" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">apply_corrections</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#apply_corrections"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.apply_corrections" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>markdown_stream</strong> (<em>TextIO</em>)</p></li>
 <li><p><strong>diff_items</strong> (<em>List</em><em>[</em><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><em>DiffItem</em></a><em>]</em>)</p></li>
 </ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.api.get_plain_text_from_markdown">
-<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">get_plain_text_from_markdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#get_plain_text_from_markdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.get_plain_text_from_markdown" title="Link to this definition"></a></dt>
-<dd><p>Removes all markdown markup from a string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>markdown_stream</strong> (<em>TextIO</em>)</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
@@ -106,12 +95,36 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="danoan.correct_markdown.core.api.remove_html_tags">
-<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">remove_html_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#remove_html_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.remove_html_tags" title="Link to this definition"></a></dt>
-<dd><p>Removes all html tags from a string.</p>
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.api.apply_diff">
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">apply_diff</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView" title="danoan.correct_markdown.core.markdown_view.MarkdownView"><span class="pre">MarkdownView</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">item</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#apply_diff"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.apply_diff" title="Link to this definition"></a></dt>
+<dd><p>Apply correction in markdown view contained in the diff item.</p>
+<p>We use the item.original_value and its after context to find the correct
+position in the markdown view where the diff operation will take place. The
+after context is important to avoid false positives, which can be quite common
+when the original_value is short such as <cite>the</cite>,` one` and so on.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>string_stream</strong> (<em>TextIO</em>)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mv</strong> (<a class="reference internal" href="danoan.correct_markdown.core.markdown_view.html#danoan.correct_markdown.core.markdown_view.MarkdownView" title="danoan.correct_markdown.core.markdown_view.MarkdownView"><em>MarkdownView</em></a>)</p></li>
+<li><p><strong>item</strong> (<a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><em>DiffItem</em></a>)</p></li>
+<li><p><strong>start</strong> (<em>int</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Tuple</em>[int, int]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="danoan.correct_markdown.core.api.render_diff_view">
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">render_diff_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">insert</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#render_diff_view"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.render_diff_view" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>markdown_stream</strong> (<em>TextIO</em>)</p></li>
+<li><p><strong>diff_items</strong> (<em>List</em><em>[</em><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><em>DiffItem</em></a><em>]</em>)</p></li>
+</ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>str</p>
@@ -121,13 +134,16 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="danoan.correct_markdown.core.api.strikethrough_errors">
-<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">strikethrough_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#strikethrough_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.strikethrough_errors" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">danoan.correct_markdown.core.api.</span></span><span class="sig-name descname"><span class="pre">strikethrough_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markdown_stream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diff_items</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><span class="pre">DiffItem</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/danoan/correct_markdown/core/api.html#strikethrough_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#danoan.correct_markdown.core.api.strikethrough_errors" title="Link to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>markdown_stream</strong> (<em>TextIO</em>)</p></li>
 <li><p><strong>diff_items</strong> (<em>List</em><em>[</em><a class="reference internal" href="danoan.correct_markdown.core.model.html#danoan.correct_markdown.core.model.DiffItem" title="danoan.correct_markdown.core.model.DiffItem"><em>DiffItem</em></a><em>]</em>)</p></li>
 </ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
 </dd>
 </dl>
 </dd></dl>
