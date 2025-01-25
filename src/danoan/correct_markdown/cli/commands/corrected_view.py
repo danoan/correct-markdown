@@ -1,4 +1,5 @@
 from danoan.correct_markdown.core import api
+from danoan.correct_markdown.core import utils as core_utils
 from danoan.correct_markdown.cli import utils
 
 import io
@@ -27,7 +28,7 @@ def __corrected_view__(original_markdown: Path, plain_text_correction: Path, **k
     with open(original_markdown) as fa, open(plain_text_correction) as fb:
         ss_a = io.StringIO(fa.read())
 
-        no_html = api.remove_html_tags(ss_a)
+        no_html = core_utils.remove_html_tags(ss_a)
 
         ss_b = io.StringIO(fb.read())
         diff_items = utils.get_diff_items(io.StringIO(no_html), ss_b)

@@ -140,6 +140,7 @@ class StringView:
                 cur_sequence = segments_seq_to_merge[-1]
             last_seg_type = cur_seg_type
 
+        segments_seq_to_merge.reverse()
         for g in segments_seq_to_merge:
             g.reverse()
             for d in g:

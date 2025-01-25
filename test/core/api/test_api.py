@@ -1,7 +1,8 @@
-from danoan.correct_markdown.core import api, model
+from danoan.correct_markdown.core import api, model, utils
 
 import io
 from pathlib import Path
+import pytest
 
 SCRIPT_FOLDER = Path(__file__).parent
 INPUT_FOLDER = SCRIPT_FOLDER / "input"
@@ -73,26 +74,14 @@ def test_text_diff_letter_and_update():
     assert diff_items[2].operation == "insert"
 
 
-def test_get_plain_text_from_markdown():
-    ss = io.StringIO(
-        '# The ultimate guide\n\nThe **ultimate guide** will lead you to the <span style="color:blue">path</span> you want to achieve.'
-    )
-
-    plain_text = api.get_plain_text_from_markdown(ss)
-    assert (
-        plain_text
-        == "The ultimate guide\nThe ultimate guide will lead you to the path you want to achieve."
-    )
-
-
 def test_strikethrough_errors_a():
     original = INPUT_FOLDER / "strikethrough" / "test_a" / "original.md"
     corrected = INPUT_FOLDER / "strikethrough" / "test_a" / "corrected.md"
     expected = INPUT_FOLDER / "strikethrough" / "test_a" / "expected.md"
 
     with open(original) as fa, open(corrected) as fb, open(expected) as fc:
-        pa = api.remove_html_tags(fa)
-        pb = api.remove_html_tags(fb)
+        pa = utils.remove_html_tags(fa)
+        pb = utils.remove_html_tags(fb)
 
         fa.seek(0)
         fb.seek(0)
@@ -190,5 +179,85 @@ def test_get_no_html_view():
     original = INPUT_FOLDER / "get_markdown_only" / "original.md"
     expected = INPUT_FOLDER / "get_markdown_only" / "expected.md"
     with open(original) as fa, open(expected) as fb:
-        md_only = api.remove_html_tags(fa)
+        md_only = utils.remove_html_tags(fa)
         assert md_only == fb.read()
+
+
+def generate_text(number_items: int):
+    import random
+
+    items = [
+        "banana",
+        "grapes",
+        "oranges",
+        "apples",
+        "cherries",
+        "yogurt",
+        "papaya",
+        "strawberries",
+        "mango",
+        "kiwi",
+        "soup",
+    ]
+
+    text = random.choice(items)
+    for i in range(number_items):
+        text += " and " + random.choice(items)
+    return text
+
+
+@pytest.mark.parametrize("number_items,expected_assertion", [(25, True), (100, False)])
+def test_D(number_items, expected_assertion, monkeypatch):
+    text_a = generate_text(number_items)
+    text_b = generate_text(number_items)
+
+    print(text_a)
+    print(text_b)
+
+    ss_a = io.StringIO(text_a)
+    ss_b = io.StringIO(text_b)
+
+    import difflib
+    import copy
+
+    SM_copy = copy.deepcopy(difflib.SequenceMatcher)
+
+    SM_True = lambda x, y, z, autojunk: SM_copy(x, y, z, autojunk=True)
+    SM_False = lambda x, y, z, autojunk: SM_copy(x, y, z, autojunk=False)
+
+    monkeypatch.setattr(difflib, "SequenceMatcher", SM_True)
+    di_True = list(
+        api.text_diff(
+            io.StringIO(text_a), io.StringIO(text_b), model.TextDiffMode.Word, 10, True
+        )
+    )
+
+    monkeypatch.setattr(difflib, "SequenceMatcher", SM_False)
+    di_False = list(
+        api.text_diff(
+            io.StringIO(text_a), io.StringIO(text_b), model.TextDiffMode.Word, 10, True
+        )
+    )
+
+    assert (len(di_True) == len(di_False)) == expected_assertion
+
+
+def test_E():
+    """
+    This test complements the test above. I found a real, minimal example in which
+    the text_view is rendered with remainders of html tags if autojunk is set to true.
+    Since the test above uses monkeypatch to validate the behaviour, this test checks
+    if the actual code uses the expected value of false for the autojunk parameter.
+    """
+    from danoan.correct_markdown.core.markdown_view import MarkdownView
+
+    with open(f"{INPUT_FOLDER}/test_E/input.md") as f:
+        original_md = f.read()
+
+    with open(f"{INPUT_FOLDER}/test_E/expected.md") as f:
+        expected_text_view = f.read()
+
+    mv = MarkdownView(io.StringIO(original_md), True)
+    print(mv.text_view)
+
+    assert mv.text_view == expected_text_view

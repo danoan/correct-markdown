@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api
+from danoan.correct_markdown.core import utils
 import argparse
 import logging
 import sys
@@ -16,7 +16,7 @@ def __markdown_view__(markdown: TextIO, **kwargs):
     Print pure markdown string without html tags.
     """
 
-    print(api.remove_html_tags(markdown))
+    print(utils.remove_html_tags(markdown))
 
 
 def extend_parser(subparser_action):

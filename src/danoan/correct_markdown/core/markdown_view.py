@@ -1,4 +1,4 @@
-from danoan.correct_markdown.core import api, model
+from danoan.correct_markdown.core import api, model, utils
 from danoan.correct_markdown.core.string_view import StringView
 
 from enum import Enum
@@ -6,13 +6,174 @@ import io
 import logging
 import re
 import sys
-from typing import Dict, List, Optional, TextIO, Tuple
+from typing import Any, Dict, List, Optional, TextIO, Tuple
 
 logger = logging.getLogger(__file__)
 handler = logging.StreamHandler(sys.stderr)
 handler.setLevel(logging.INFO)
 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
 logger.addHandler(handler)
+
+###########################
+# Model
+###########################
+
+
+class DiffOperation(Enum):
+    Insert = "insert"
+    Delete = "delete"
+    Replace = "replace"
+    Equal = "equal"
+
+
+class SegmentType(Enum):
+    EditableContent = "no_html"
+    NoEditableContent = "html"
+
+
+SegmentsDict = Dict[SegmentType, List[str]]
+
+###########################
+# Helper Functions
+###########################
+
+
+def build_segments(
+    segments: Dict[Any, Any],
+    base_string: TextIO,
+    compare_string: TextIO,
+    replace,
+    insert,
+    equal,
+    delete,
+):
+    """
+    Create StringView segments from a list of diffs between a compare string and a base string.
+
+    Example:
+        base_string:    <span>Today is a wonderful day!</span>
+        compare_string: Today is a wonderful day!
+
+        diffs:
+            - Insert(<span>)
+            - Equal(Today is a wonderful day!)
+            - Insert(</span>
+
+        The diff events are used to arbitrate how the string segments are created.
+        In the example above, one could separate html tags from text content.
+    """
+    for di in api.text_diff(compare_string, base_string, model.TextDiffMode.Letter):
+        operation = DiffOperation(di.operation)
+        if operation == DiffOperation.Replace:
+            replace(segments, di)
+        elif operation == DiffOperation.Insert:
+            insert(segments, di)
+        elif operation == DiffOperation.Equal:
+            equal(segments, di)
+        elif operation == DiffOperation.Delete:
+            delete(segments, di)
+
+
+def build_pure_markdown_segments(original_markdown: TextIO):
+    """
+    Create StringView segments for a markdown document.
+
+    The EditableContent will contain plain text and also markdown markups. That
+    is.
+
+    Example:
+        original_markdown: <span>Today is a **wonderful** day!</span>
+
+        EditableContent: Today is a **wonderful** day!
+        NoEditableContent: <span></span>
+    """
+    pure_markdown = utils.remove_html_tags(original_markdown)
+    original_markdown.seek(0)
+
+    ss_pure_markdown = io.StringIO(pure_markdown)
+
+    def replace(segments: SegmentsDict, di: model.DiffItem):
+        tags = utils.extract_html_tags(di.new_value)
+        pos = 0
+        for t in tags:
+            t_start, t_end = t[1:]
+            segments[SegmentType.EditableContent].append(di.new_value[pos:t_start])
+            segments[SegmentType.NoEditableContent].append(di.new_value[t_start:t_end])
+            pos = t_end
+
+    def insert(segments: SegmentsDict, di: model.DiffItem):
+        segments[SegmentType.EditableContent].append("")
+        segments[SegmentType.NoEditableContent].append(di.new_value)
+
+    def equal(segments: SegmentsDict, di: model.DiffItem):
+        segments[SegmentType.EditableContent].append(di.original_value)
+        segments[SegmentType.NoEditableContent].append("")
+
+    def delete(segments: SegmentsDict, di: model.DiffItem):
+        logger.error("Non expected delete operation:", di.original_value, di.new_value)
+
+    segments: SegmentsDict = {}
+    segments[SegmentType.EditableContent] = []
+    segments[SegmentType.NoEditableContent] = []
+    build_segments(
+        segments,
+        original_markdown,
+        ss_pure_markdown,
+        replace,
+        insert,
+        equal,
+        delete,
+    )
+
+    return segments
+
+
+def build_plain_text_segments(original_markdown: TextIO):
+    """
+    Create StringView segments for a markdown document.
+
+    The EditableContent will contain plain text and no markdown markups. That
+    is.
+
+    Example:
+        original_markdown: <span>Today is a **wonderful** day!</span>
+
+        EditableContent: Today is a wonderful day!
+        NoEditableContent: <span>****</span>
+    """
+    plain_text = utils.get_plain_text_from_markdown(original_markdown)
+    original_markdown.seek(0)
+
+    ss_plain_text = io.StringIO(plain_text)
+
+    def replace(segments: SegmentsDict, di: model.DiffItem):
+        logger.error("Non expected replace operation:", di.original_value, di.new_value)
+
+    def insert(segments: SegmentsDict, di: model.DiffItem):
+        segments[SegmentType.EditableContent].append("")
+        segments[SegmentType.NoEditableContent].append(di.new_value)
+
+    def equal(segments: SegmentsDict, di: model.DiffItem):
+        segments[SegmentType.EditableContent].append(di.original_value)
+        segments[SegmentType.NoEditableContent].append("")
+
+    def delete(segments: SegmentsDict, di: model.DiffItem):
+        logger.error("Non expected delete operation:", di.original_value, di.new_value)
+
+    segments: SegmentsDict = {}
+    segments[SegmentType.EditableContent] = []
+    segments[SegmentType.NoEditableContent] = []
+    build_segments(
+        segments,
+        original_markdown,
+        ss_plain_text,
+        replace,
+        insert,
+        equal,
+        delete,
+    )
+
+    return segments
 
 
 class MarkdownView:
@@ -26,51 +187,16 @@ class MarkdownView:
     non-contiguous text segments. In this case, the new value is put in the first segment.
     """
 
-    class SegmentType(Enum):
-        NoHtml = "no_html"
-        Html = "html"
+    def __init__(self, original_markdown: TextIO, keep_markdown_tags: bool = False):
+        if keep_markdown_tags:
+            segments_pure_markdown = build_pure_markdown_segments(original_markdown)
+            self.SV = StringView(segments_pure_markdown)
+        else:
+            segments_plain_text = build_plain_text_segments(original_markdown)
 
-    class DiffOperation(Enum):
-        Insert = "insert"
-        Delete = "delete"
-        Replace = "replace"
-        Equal = "equal"
+            self.SV = StringView(segments_plain_text)
 
-    def __init__(self, original_markdown: TextIO):
-        pure_markdown = api.remove_html_tags(original_markdown)
-        original_markdown.seek(0)
-
-        ss_text = io.StringIO(pure_markdown)
-        segments: Dict[MarkdownView.SegmentType, List[str]] = {}
-        segments[MarkdownView.SegmentType.NoHtml] = []
-        segments[MarkdownView.SegmentType.Html] = []
-        for di in api.text_diff(ss_text, original_markdown, model.TextDiffMode.Letter):
-            operation = MarkdownView.DiffOperation(di.operation)
-            if operation == MarkdownView.DiffOperation.Replace:
-                tags = api.extract_html_tags(di.new_value)
-                pos = 0
-                for t in tags:
-                    t_start, t_end = t[1:]
-                    segments[MarkdownView.SegmentType.NoHtml].append(
-                        di.new_value[pos:t_start]
-                    )
-                    segments[MarkdownView.SegmentType.Html].append(
-                        di.new_value[t_start:t_end]
-                    )
-                    pos = t_end
-            elif operation == MarkdownView.DiffOperation.Insert:
-                segments[MarkdownView.SegmentType.NoHtml].append("")
-                segments[MarkdownView.SegmentType.Html].append(di.new_value)
-            elif operation == MarkdownView.DiffOperation.Equal:
-                segments[MarkdownView.SegmentType.NoHtml].append(di.original_value)
-                segments[MarkdownView.SegmentType.Html].append("")
-            elif operation == MarkdownView.DiffOperation.Delete:
-                logger.error(
-                    "Non expected delete operation:", di.original_value, di.new_value
-                )
-
-        self.SV = StringView(segments)
-        self.text_view = self.SV[MarkdownView.SegmentType.NoHtml]
+        self.text_view = self.SV[SegmentType.EditableContent]
 
     def find(
         self,
@@ -90,7 +216,7 @@ class MarkdownView:
 
         words = search_value.split()
         if len(words) == 0:
-            s = self.text_view.find(search_value, start, end)
+            s = self.text_view.find(re.escape(search_value), start, end)
             if s == -1:
                 return s, s
             else:
@@ -129,30 +255,36 @@ class MarkdownView:
         """
         ti_start, ti_end = self.find(old_value, t_start)
 
-        m_start = self.SV.get_mindex(ti_start, MarkdownView.SegmentType.NoHtml)
-        m_end = self.SV.get_mindex(ti_end - 1, MarkdownView.SegmentType.NoHtml)
+        m_start = self.SV.get_mindex(ti_start, SegmentType.EditableContent)
+        m_end = self.SV.get_mindex(ti_end - 1, SegmentType.EditableContent)
 
         if m_start == m_end:
-            suffix = self.SV[MarkdownView.SegmentType.NoHtml][ti_end:]
+            suffix = self.SV[SegmentType.EditableContent][ti_end:]
             if len(new_value) == 0:
                 # In case of a delete, remove the whitespace
-                self.SV[MarkdownView.SegmentType.NoHtml] = (
+                self.SV[SegmentType.EditableContent] = (
                     ti_start - 1,
                     new_value + suffix,
                 )
             else:
-                self.SV[MarkdownView.SegmentType.NoHtml] = ti_start, new_value + suffix
+                self.SV[SegmentType.EditableContent] = (
+                    ti_start,
+                    new_value + suffix,
+                )
         else:
-            after = self.SV[MarkdownView.SegmentType.NoHtml][ti_end:]
-            self.SV[MarkdownView.SegmentType.NoHtml] = ti_start, new_value + after
+            after = self.SV[SegmentType.EditableContent][ti_end:]
+            self.SV[SegmentType.EditableContent] = (
+                ti_start,
+                new_value + after,
+            )
 
             delete = []
             for i in range(m_start + 1, m_end + 1):
-                if self.SV.index[i].view_name == MarkdownView.SegmentType.NoHtml:
+                if self.SV.index[i].view_name == SegmentType.EditableContent:
                     delete.append(i)
             self.SV.remove(*delete)
 
-        self.text_view = self.SV[MarkdownView.SegmentType.NoHtml]
+        self.text_view = self.SV[SegmentType.EditableContent]
 
     def get_full_content(self) -> str:
         """
@@ -164,16 +296,16 @@ class MarkdownView:
         """
         Return a string joining all pure markdown and plain-text segments.
         """
-        return self.SV[MarkdownView.SegmentType.NoHtml]
+        return self.SV[SegmentType.EditableContent]
 
     def get_html_view(self) -> str:
         """
         Return a string joining HTML tags segments.
         """
-        return self.SV[MarkdownView.SegmentType.Html]
+        return self.SV[SegmentType.NoEditableContent]
 
     def __len__(self):
-        return len(self.SV[MarkdownView.SegmentType.NoHtml])
+        return len(self.SV[SegmentType.EditableContent])
 
     def __getitem__(self, key):
-        return self.SV[MarkdownView.SegmentType.NoHtml][key]
+        return self.SV[SegmentType.EditableContent][key]
